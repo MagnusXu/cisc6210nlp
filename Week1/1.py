@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Spyder Editor
+Created on Fri Sep  6 21:12:40 2019
 
-This is a temporary script file.
+@author: MagnusXu
 """
 
 from bs4 import BeautifulSoup
