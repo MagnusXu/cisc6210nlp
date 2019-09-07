@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Sep  6 23:57:32 2019
+
+@author: MagnusXu
+"""
+
 import pandas as pd
 import re
 from nltk import word_tokenize
@@ -9,6 +17,7 @@ df = pd.DataFrame(columns = ['PoemID', 'Author', 'LengthOne', 'LengthTwo',
                              'NumLine', 'NumPara', 'NumSent', 'NumComma'])
 
 for index, row in clean.iterrows():
+    print(index)
     poemID = index
     author = row['Author']
     
@@ -26,3 +35,13 @@ for index, row in clean.iterrows():
     
     sen = sent_tokenize(row['Body'])
     comma = row['Body'].count(',')
+    
+    raw = {'PoemID': poemID, 'Author': author, 'LengthOne': len1,
+              'LengthTwo': len2, 'NumLine': numL, 'NumPara': numP, 
+              'NumSent':len(sen), 'NumComma': comma}
+    record = pd.DataFrame(raw, index = [0])
+    
+    df = df.append(record, ignore_index = True)
+
+df.to_csv('/Users/lordxuzhiyu/Desktop/ProcessedLoveOutput0.csv', 
+              index = None, header = True)    
