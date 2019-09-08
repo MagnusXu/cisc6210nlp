@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Sep  7 00:11:28 2019
+@author: MagnusXu
+"""
+
 import pandas as pd
 import re
 import nltk
