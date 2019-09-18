@@ -6,10 +6,9 @@ Created on Sun Sep 15 23:48:19 2019
 @author: lordxuzhiyu
 """
 
-import nltk
-import re
-from nltk.tokenize import sent_tokenize
+import re, random
 from nltk.tokenize import word_tokenize
+from nltk import ngrams
 from nltk.probability import FreqDist
 
 class NGram:
@@ -24,7 +23,7 @@ class NGram:
         return [" ".join(ngram) for ngram in ngrams]
     
     def get_vocab(self):
-        tokens = nltk.word_tokenize(self)
+        tokens = word_tokenize(self)
         return set(tokens)
     
     def size_vocab(self):
@@ -47,17 +46,32 @@ class NGram:
         return len(tokenized_word)
     
     def len_ngram(self):
-        return 0
+        return len(self) - self.n + 1
     
     def word_freq(self, word):
-        return 0
+        freq = self.prob(self, word)
+        return freq
     
     def ngram_freq(self, gram):
-        return 0
+        tokens = ngrams(self.split(), self.n)
+        fdist = FreqDist(tokens)
+        if gram in fdist:
+            freq = float(fdist[gram]) / len(tokens)
+        else:
+            freq = 1 / (len(tokens) + 1)
+        return freq
     
     def generate_text(self, context, min_length, max_length):
-        return 0
+        tokens = word_tokenize(context)
+        gram = ngrams(tokens, self.n)
+        current = tokens[0:self.n]
+        output = current
+        for i in range(min_length, max_length):
+            possible = gram[current]
+            next = possible[random.randrange(len(possible))]
+            output += next
+            current = output[len(output) - self.n:len(output)]
+        return output
     
     def perplexity(self, text):
-        return 0
-    
+        return pow(2.0, self.entropy(text))
