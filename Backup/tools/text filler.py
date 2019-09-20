@@ -44,6 +44,7 @@ for i in range(len(tokens)-chars):
 
 curr_sequence = tokens[0:chars]
 output = curr_sequence
+
 for i in range(len(ngrams)):
     if curr_sequence not in ngrams.keys():
         break
