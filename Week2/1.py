@@ -6,6 +6,7 @@ Created on Sun Sep 15 23:48:19 2019
 @author: lordxuzhiyu
 """
 
+import requests
 import re, random
 from nltk.tokenize import word_tokenize
 from nltk import ngrams
@@ -13,14 +14,26 @@ from nltk.probability import FreqDist
 
 class NGram:
     def _init_(self, n):
+        head = {
+            'User-Agent':'Mozilla/4.0(compatible;MSIE 5.5;Windows NT)',
+        }
+        
+        url = 'https://storm.cis.fordham.edu/~yli/data/MyShakespeare.txt'
+        html = requests.get(url, headers = head)
+        result = html.text        
+        s = result.lower()
+        s = re.sub(r'[^a-zA-Z0-9\s]', ' ', s)   
+        
         self.n = n
+        self.text = s
         
     def update(self, text):
         text = text.lower()
         text = re.sub(r'[^a-zA-Z0-9\s]', ' ', text)
-        tokens = [token for token in text.split(" ") if token != ""]
+        tokens = word_tokenize(text)
         ngrams = zip(*[tokens[i:] for i in range(self.n)])
-        return [" ".join(ngram) for ngram in ngrams]
+        result = [" .".join(ngram) for ngram in ngrams]
+        return result
     
     def get_vocab(self):
         tokens = word_tokenize(self)
@@ -31,34 +44,34 @@ class NGram:
         return size
     
     def prob(self, context, word):
-        tokens = word_tokenize(context)
-        fdist = FreqDist(tokens)
-        if len(tokens)> 1000:
-            probability = 1 / len(tokens)
+        fdist = FreqDist(context)
+        if len(context)> 1000:
+            probability = 1 / len(context)
         elif word in fdist:
-            probability = float(fdist[word]) / len(tokens)
+            probability = float(fdist[word]) / len(context)
         else:
-            probability = 1 / (len(tokens) + 1)
+            probability = 1 / (len(context) + 1)
         return probability
     
     def len_text(self):
-        tokenized_word = word_tokenize(self)
+        tokenized_word = word_tokenize(self.s)
         return len(tokenized_word)
     
     def len_ngram(self):
-        return len(self) - self.n + 1
+        text = self.text
+        gram = self.update(text)
+        return len(gram)
     
     def word_freq(self, word):
-        freq = self.prob(self, word)
+        text = self.text
+        tokens = word_tokenize(text)
+        freq = self.prob(tokens, word)
         return freq
     
     def ngram_freq(self, gram):
-        tokens = ngrams(self.split(), self.n)
-        fdist = FreqDist(tokens)
-        if gram in fdist:
-            freq = float(fdist[gram]) / len(tokens)
-        else:
-            freq = 1 / (len(tokens) + 1)
+        text = self.text()
+        ngram = self.update(text)
+        freq = self.prob(ngram, gram)
         return freq
     
     def generate_text(self, context, min_length, max_length):
@@ -66,7 +79,7 @@ class NGram:
         gram = ngrams(tokens, self.n)
         current = tokens[0:self.n]
         output = current
-        for i in range(min_length, max_length):
+        for i in range(max_length):
             possible = gram[current]
             next = possible[random.randrange(len(possible))]
             output += next
@@ -74,4 +87,15 @@ class NGram:
         return output
     
     def perplexity(self, text):
-        return pow(2.0, self.entropy(text))
+        per = 1
+        num = 0
+        s = self.text()
+        gram = self.update(s)
+        for word in text:
+            if word in gram:
+                num += 1
+                probability = self.prob(gram, word)
+                per = per * (1/probability)
+        per = pow(per, 1/float(num))
+    
+        return per
