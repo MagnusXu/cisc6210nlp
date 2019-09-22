@@ -148,3 +148,27 @@ for i in range(max_length):
         continue
 output = ' '.join(output)    
 print(output)
+
+
+
+
+    
+for i in range(max_length):
+    freq_list = {}
+    for word in vocab:
+        gram = '%s %s' % (input, word)
+        freq = ngram_freq(n, gram)
+        freq_list[word] = freq
+        print(gram, freq)
+
+    freq_list = sorted(freq_list.items(), key = operator.itemgetter(1, 0), reverse = True)
+    input = freq_list[0]
+    print(i)
+    print(input)
+    output.append(input)
+    try:
+        input = input.split(' ', 1)[1]
+    except: 
+        continue
+output = ' '.join(output)    
+print(output)
