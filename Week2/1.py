@@ -41,10 +41,9 @@ class NGram:
             text = '. ' + text
         elif self.n == 3:
             text = '. '*2 + text
-        else:
-            tokens = word_tokenize(text)
-            ngrams = zip(*[tokens[i:] for i in range(self.n)])
-            result = [" ".join(ngram) for ngram in ngrams]
+        tokens = word_tokenize(text)
+        ngrams = zip(*[tokens[i:] for i in range(self.n)])
+        result = [" ".join(ngram) for ngram in ngrams]
         return result
     
     def get_vocab(self):
