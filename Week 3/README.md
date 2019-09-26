@@ -7,6 +7,7 @@
 - Get familiar with Sklearn package
 ## Data Set
 The dataset folder: http://storm.cis.fordham.edu/~yli/data/electronics
+
 Data courtesy: https://www.cs.jhu.edu/~mdredze/datasets/sentiment/index2.html
 ## Tasks
 1. Study the review datasets.
